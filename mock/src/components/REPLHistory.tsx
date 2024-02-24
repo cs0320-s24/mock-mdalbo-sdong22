@@ -14,7 +14,12 @@ export function REPLHistory(props: REPLHistoryProps) {
           i // uniquely identify each element of array
         ) =>
           props.isVerbose === true ? (
-            elem.map((e, index) => <p key={index}>{e}</p>)
+            elem.map((e, index) => (
+              <p key={index}>
+                {index === 0 ? "result: " : "command: "}
+                {e}
+              </p>
+            ))
           ) : (
             <p key={i}>{elem[0]}</p>
           )
