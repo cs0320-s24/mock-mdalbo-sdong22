@@ -1,6 +1,7 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
+import { Mock } from "./Mock";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -8,6 +9,7 @@ interface REPLInputProps {
   setHistory: Dispatch<SetStateAction<[string, string][]>>;
   isVerbose: boolean;
   setVerbose: Dispatch<SetStateAction<boolean>>;
+  mock: Mock;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -28,15 +30,20 @@ export function REPLInput(props: REPLInputProps) {
    */
 
   const handleSubmit = () => {
+    const parsedCommand: string[] = commandString.split(" ", 2);
     setCount(count + 1);
-    if (commandString == "mode") {
+    if (parsedCommand[0] == "mode") {
       if (props.isVerbose == true) {
         props.setVerbose(false);
       } else {
         props.setVerbose(true);
       }
+    } else if (parsedCommand[0] == "load_csv") {
+      const output: string = props.mock.loadCsv(parsedCommand[1]);
+      props.setHistory([...props.history, [output, commandString]]);
+    } else {
+      props.setHistory([...props.history, ["result", commandString]]);
     }
-    props.setHistory([...props.history, [commandString, "result"]]);
     setCommandString("");
   };
 

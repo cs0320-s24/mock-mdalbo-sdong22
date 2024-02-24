@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
+import { Mock } from "./Mock";
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -17,6 +18,7 @@ export default function REPL() {
 
   const [history, setHistory] = useState<[string, string][]>([]);
   const [isVerbose, setVerbose] = useState<boolean>(false);
+  const backendMock: Mock = new Mock();
 
   return (
     <div className="repl">
@@ -30,6 +32,7 @@ export default function REPL() {
         setHistory={setHistory}
         isVerbose={isVerbose}
         setVerbose={setVerbose}
+        mock={backendMock}
       />
     </div>
   );
