@@ -2,7 +2,8 @@ import "../styles/main.css";
 
 interface REPLHistoryProps {
   // TODO: Fill with some shared state tracking all the pushed commands
-  history: string[];
+  isVerbose: boolean;
+  history: [string, string][];
 }
 export function REPLHistory(props: REPLHistoryProps) {
   return (
@@ -11,9 +12,12 @@ export function REPLHistory(props: REPLHistoryProps) {
         (
           elem,
           i // uniquely identify each element of array
-        ) => (
-          <p key={i}>{elem}</p>
-        )
+        ) =>
+          props.isVerbose === true ? (
+            elem.map((e, index) => <p key={index}>{e}</p>)
+          ) : (
+            <p key={i}>{elem[0]}</p>
+          )
       )}
       {/* This is where command history will go */}
       {/* TODO: To go through all the pushed commands... try the .map() function! */}

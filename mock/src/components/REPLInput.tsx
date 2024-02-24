@@ -4,8 +4,10 @@ import { ControlledInput } from "./ControlledInput";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
-  history: string[];
-  setHistory: Dispatch<SetStateAction<string[]>>;
+  history: [string, string][];
+  setHistory: Dispatch<SetStateAction<[string, string][]>>;
+  isVerbose: boolean;
+  setVerbose: Dispatch<SetStateAction<boolean>>;
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -22,11 +24,19 @@ export function REPLInput(props: REPLInputProps) {
   /**
    * We suggest breaking down this component into smaller components, think about the individual pieces
    * of the REPL and how they connect to each other...
+   *
    */
 
   const handleSubmit = () => {
     setCount(count + 1);
-    props.setHistory([...props.history, commandString]);
+    if (commandString == "mode") {
+      if (props.isVerbose == true) {
+        props.setVerbose(false);
+      } else {
+        props.setVerbose(true);
+      }
+    }
+    props.setHistory([...props.history, [commandString, "result"]]);
     setCommandString("");
   };
 
