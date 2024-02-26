@@ -6,28 +6,36 @@ import { Mock } from "./Mock";
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: [string, string][];
-  setHistory: Dispatch<SetStateAction<[string, string][]>>;
+  setHistory: Dispatch<SetStateAction<[string, (string | number)[][]][]>>;
   isVerbose: boolean;
   setVerbose: Dispatch<SetStateAction<boolean>>;
-  mock: Mock;
+  currCSV: string;
+  setCurrCSV: Dispatch<SetStateAction<string>>;
 }
-// You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
-// REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
+
 export function REPLInput(props: REPLInputProps) {
-  // Remember: let React manage state in your webapp.
-  // Manages the contents of the input box
+  const nameToCSV: Map<string, (string | number)[][]> = new Map([
+    [
+      "csv1",
+      [
+        [1, 2, 3, 4, 5],
+        ["The", "song", "remains", "the", "same."],
+      ],
+    ],
+    ["csv2", [[10, 9, 8, 7], ["Second", "CSV", "file"], ["bka"]]],
+  ]);
+
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0); // highly recommended to include type in <>
-  // TODO WITH TA : add a count state
 
-  // TODO WITH TA: build a handleSubmit function called in button onClick
-  // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
-  // add to it with new commands.
-  /**
-   * We suggest breaking down this component into smaller components, think about the individual pieces
-   * of the REPL and how they connect to each other...
-   *
-   */
+  const handleLoad = (name: string): string => {
+    if (name in nameToCSV) {
+      props.setCurrCSV(name);
+      return "succesfully loaded: " + name;
+    } else {
+      return "sorry file does not exists in map";
+    }
+  };
 
   const handleSubmit = () => {
     const parsedCommand: string[] = commandString.split(" ", 2);
@@ -39,8 +47,14 @@ export function REPLInput(props: REPLInputProps) {
         props.setVerbose(true);
       }
     } else if (parsedCommand[0] == "load_csv") {
-      const output: string = props.mock.loadCsv(parsedCommand[1]);
+      const output: string = handleLoad(parsedCommand[1]);
       props.setHistory([...props.history, [output, commandString]]);
+    } else if (parsedCommand[0] == "view") {
+    } else if (parsedCommand[0] == "search") {
+      props.setHistory([
+        ...props.history,
+        [nameToCSV.get(props.currCSV), commandString],
+      ]);
     } else {
       props.setHistory([...props.history, ["result", commandString]]);
     }

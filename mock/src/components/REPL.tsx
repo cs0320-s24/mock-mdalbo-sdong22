@@ -18,7 +18,7 @@ export default function REPL() {
 
   const [history, setHistory] = useState<[string, string][]>([]);
   const [isVerbose, setVerbose] = useState<boolean>(false);
-  const backendMock: Mock = new Mock();
+  const [currCSV, setCurrCSV] = useState<string>("");
 
   return (
     <div className="repl">
@@ -32,7 +32,8 @@ export default function REPL() {
         setHistory={setHistory}
         isVerbose={isVerbose}
         setVerbose={setVerbose}
-        mock={backendMock}
+        currCSV={currCSV}
+        setCurrCSV={setCurrCSV}
       />
     </div>
   );
