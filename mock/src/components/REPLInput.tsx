@@ -1,12 +1,14 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
-import { Mock } from "./Mock";
+import { REPLFunction } from "./REPLFunction";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
-  history: [string, string][];
-  setHistory: Dispatch<SetStateAction<[string, (string | number)[][]][]>>;
+  history: [string, string | (string | number)[][]][];
+  setHistory: Dispatch<
+    SetStateAction<[string, string | (string | number)[][]][]>
+  >;
   isVerbose: boolean;
   setVerbose: Dispatch<SetStateAction<boolean>>;
   currCSV: string;
@@ -14,22 +16,48 @@ interface REPLInputProps {
 }
 
 export function REPLInput(props: REPLInputProps) {
+  // Example CSV Json
+  const data1: (string | number)[][] = [
+    [1, 2, 3, 4, 5],
+    ["The", "song", "remains", "the", "same."],
+  ];
+  const data2: (string | number)[][] = [
+    [10, 9, 8, 7],
+    ["Second", "CSV", "file"],
+    ["bka"],
+  ];
+
+  // Map of CSVs
   const nameToCSV: Map<string, (string | number)[][]> = new Map([
-    [
-      "csv1",
-      [
-        [1, 2, 3, 4, 5],
-        ["The", "song", "remains", "the", "same."],
-      ],
-    ],
-    ["csv2", [[10, 9, 8, 7], ["Second", "CSV", "file"], ["bka"]]],
+    ["csv1", data1],
+    ["csv2", data2],
   ]);
 
   const [commandString, setCommandString] = useState<string>("");
-  const [count, setCount] = useState<number>(0); // highly recommended to include type in <>
+  const [count, setCount] = useState<number>(0);
 
+  const mode: REPLFunction = (args: Array<string>): string | string[][] => {
+    if (props.isVerbose == true) {
+      props.setVerbose(false);
+    } else {
+      props.setVerbose(true);
+    }
+    return "mode";
+  };
+
+  const load: REPLFunction = (args: Array<string>): String | String[][] => {
+    return "error go away";
+  };
+
+  const view: REPLFunction = (args: Array<string>): String | String[][] => {
+    return "error go away";
+  };
+  // Map from command to function
+  const commandToFunction: Map<string, REPLFunction> = new Map([
+    ["mode", mode],
+  ]);
   const handleLoad = (name: string): string => {
-    if (name in nameToCSV) {
+    if (nameToCSV.has(name)) {
       props.setCurrCSV(name);
       return "succesfully loaded: " + name;
     } else {
@@ -40,21 +68,30 @@ export function REPLInput(props: REPLInputProps) {
   const handleSubmit = () => {
     const parsedCommand: string[] = commandString.split(" ", 2);
     setCount(count + 1);
+
+    // Check Map for parsedCommand[0]
+    if (commandToFunction.has(parsedCommand[0])) {
+      const func: REPLFunction = commandToFunction.get(parsedCommand[0])!;
+      func(parsedCommand);
+    }
+
     if (parsedCommand[0] == "mode") {
-      if (props.isVerbose == true) {
-        props.setVerbose(false);
-      } else {
-        props.setVerbose(true);
-      }
+      // mode(parsedCommand);
     } else if (parsedCommand[0] == "load_csv") {
       const output: string = handleLoad(parsedCommand[1]);
-      props.setHistory([...props.history, [output, commandString]]);
+      props.setHistory([...props.history, [commandString, output]]);
     } else if (parsedCommand[0] == "view") {
+      const output: (string | number)[][] | undefined = nameToCSV.get(
+        props.currCSV
+      );
+      if (output !== undefined) {
+        props.setHistory([...props.history, [commandString, output]]);
+      }
     } else if (parsedCommand[0] == "search") {
-      props.setHistory([
-        ...props.history,
-        [nameToCSV.get(props.currCSV), commandString],
-      ]);
+      // props.setHistory([
+      //   ...props.history,
+      //   [nameToCSV.get(props.currCSV), commandString],
+      // ]);
     } else {
       props.setHistory([...props.history, ["result", commandString]]);
     }
