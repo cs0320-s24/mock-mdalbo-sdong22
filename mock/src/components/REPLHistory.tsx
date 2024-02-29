@@ -35,11 +35,16 @@ export function REPLHistory(props: REPLHistoryProps) {
 function arrayToTable(data: (string | number)[][]): JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
-      <table style={{ margin: "auto" }}>
+      <table style={{ margin: "auto", borderCollapse: "collapse" }}>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {row.map((cell, cellIndex) => (
-              <td key={cellIndex}>{cell}</td>
+              <td
+                key={cellIndex}
+                style={{ border: "1px solid black", padding: "10px" }}
+              >
+                {cell}
+              </td>
             ))}
           </tr>
         ))}
