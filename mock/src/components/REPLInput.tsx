@@ -5,7 +5,6 @@ import { REPLFunction } from "./REPLFunction";
 import { commands } from "./Commands";
 
 interface REPLInputProps {
-  // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
   history: [string, string | (string | number)[][]][];
   setHistory: Dispatch<
     SetStateAction<[string, string | (string | number)[][]][]>
@@ -16,11 +15,16 @@ interface REPLInputProps {
   setCurrCSV: Dispatch<SetStateAction<string>>;
 }
 
+/**
+ * REPLInput component. Provides functionality when the submit button is pressed. Attempts to run a corresponding
+ * function based on user input. Creates states for commandString which represents the user inputted string.
+ * Also creates a count state to represent how many times the submit button was clicked.
+ */
 export function REPLInput(props: REPLInputProps) {
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
 
-  // Create Map from command to function from commands function
+  // Initializes a Map of command to REPLFunction by calling the commands function
   const commandToFunction: Map<string, REPLFunction> = commands(
     props.isVerbose,
     props.setVerbose,
@@ -28,11 +32,18 @@ export function REPLInput(props: REPLInputProps) {
     props.setCurrCSV
   );
 
+  /**
+   * Ran when Submit button is clicked. The user's input is split via spaces and accepts a maximum of 5 split elements
+   * to protect against users adding an excessive number of arguments. The input is processed and if the commandToFunction
+   * map contains thhe corresponding REPLFunction. If the function is found, its output is added to history.
+   */
   const handleSubmit = () => {
-    const parsedCommand: string[] = commandString.split(" ", 2);
+    const parsedCommand: string[] = commandString.split(" ", 5);
+    if (commandString.length < 1) {
+      return;
+    }
     setCount(count + 1);
 
-    // Check Map for parsedCommand[0]
     if (commandToFunction.has(parsedCommand[0])) {
       const func: REPLFunction = commandToFunction.get(parsedCommand[0])!;
       props.setHistory([
@@ -40,17 +51,20 @@ export function REPLInput(props: REPLInputProps) {
         [commandString, func(parsedCommand)],
       ]);
     } else {
-      props.setHistory([...props.history, ["result", commandString]]);
+      props.setHistory([
+        ...props.history,
+        [commandString, "no known function for given command"],
+      ]);
     }
     setCommandString("");
   };
 
+  /**
+   * The returned jsx element corresponds to the bottom of the screen where users enter a command and then enter that command.
+   * It keeps a counter of how many times the command has been submitted.
+   */
   return (
     <div className="repl-input">
-      {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
-            braces, so that React knows it should be interpreted as TypeScript */}
-      {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
-            into a single unit, which makes it easier for screenreaders to navigate. */}
       <fieldset>
         <legend>Enter a command:</legend>
         <ControlledInput
@@ -59,8 +73,6 @@ export function REPLInput(props: REPLInputProps) {
           ariaLabel={"Command input"}
         />
       </fieldset>
-      {/* TODO WITH TA: Build a handleSubmit function that increments count and displays the text in the button */}
-      {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
       <button onClick={handleSubmit}>Submitted {count} times</button>
     </div>
   );

@@ -1,18 +1,7 @@
 /**
- * A command-processor function for our REPL. The function returns a string, which is the value to print to history when
- * the command is done executing.
- *
- * The arguments passed in the input (which need not be named "args") should
- * *NOT* contain the command-name prefix.
+ * A command-processor function for our REPL. The function returns an array. The array contains strings or string | number array.
+ * The returned value is added to history in REPLInput when the command is finished executing.
  */
 export interface REPLFunction {
   (args: Array<string>): string | (string | number)[][];
-}
-
-function outerFunction(param: string): REPLFunction {
-  // isVergose = argument2
-  return (args: Array<string>) => {
-    // setIsVerbose
-    return "";
-  };
 }
