@@ -2,6 +2,7 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { REPLFunction } from "./REPLFunction";
+import { commands } from "./Commands";
 
 interface REPLInputProps {
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -16,54 +17,16 @@ interface REPLInputProps {
 }
 
 export function REPLInput(props: REPLInputProps) {
-  // Example CSV Json
-  const data1: (string | number)[][] = [
-    [1, 2, 3, 4, 5],
-    ["The", "song", "remains", "the", "same."],
-  ];
-  const data2: (string | number)[][] = [
-    [10, 9, 8, 7],
-    ["Second", "CSV", "file"],
-    ["bka"],
-  ];
-
-  // Map of CSVs
-  const nameToCSV: Map<string, (string | number)[][]> = new Map([
-    ["csv1", data1],
-    ["csv2", data2],
-  ]);
-
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
 
-  const mode: REPLFunction = (args: Array<string>): string | string[][] => {
-    if (props.isVerbose == true) {
-      props.setVerbose(false);
-    } else {
-      props.setVerbose(true);
-    }
-    return "mode";
-  };
-
-  const load: REPLFunction = (args: Array<string>): String | String[][] => {
-    return "error go away";
-  };
-
-  const view: REPLFunction = (args: Array<string>): String | String[][] => {
-    return "error go away";
-  };
-  // Map from command to function
-  const commandToFunction: Map<string, REPLFunction> = new Map([
-    ["mode", mode],
-  ]);
-  const handleLoad = (name: string): string => {
-    if (nameToCSV.has(name)) {
-      props.setCurrCSV(name);
-      return "succesfully loaded: " + name;
-    } else {
-      return "sorry file does not exists in map";
-    }
-  };
+  // Create Map from command to function from commands function
+  const commandToFunction: Map<string, REPLFunction> = commands(
+    props.isVerbose,
+    props.setVerbose,
+    props.currCSV,
+    props.setCurrCSV
+  );
 
   const handleSubmit = () => {
     const parsedCommand: string[] = commandString.split(" ", 2);
@@ -72,26 +35,10 @@ export function REPLInput(props: REPLInputProps) {
     // Check Map for parsedCommand[0]
     if (commandToFunction.has(parsedCommand[0])) {
       const func: REPLFunction = commandToFunction.get(parsedCommand[0])!;
-      func(parsedCommand);
-    }
-
-    if (parsedCommand[0] == "mode") {
-      // mode(parsedCommand);
-    } else if (parsedCommand[0] == "load_csv") {
-      const output: string = handleLoad(parsedCommand[1]);
-      props.setHistory([...props.history, [commandString, output]]);
-    } else if (parsedCommand[0] == "view") {
-      const output: (string | number)[][] | undefined = nameToCSV.get(
-        props.currCSV
-      );
-      if (output !== undefined) {
-        props.setHistory([...props.history, [commandString, output]]);
-      }
-    } else if (parsedCommand[0] == "search") {
-      // props.setHistory([
-      //   ...props.history,
-      //   [nameToCSV.get(props.currCSV), commandString],
-      // ]);
+      props.setHistory([
+        ...props.history,
+        [commandString, func(parsedCommand)],
+      ]);
     } else {
       props.setHistory([...props.history, ["result", commandString]]);
     }

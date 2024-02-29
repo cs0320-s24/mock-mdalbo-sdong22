@@ -21,7 +21,9 @@ export function REPLHistory(props: REPLHistoryProps) {
               </p>
             ))
           ) : (
-            <p key={i}>{elem[1]}</p>
+            <p key={i}>
+              {typeof elem[1] !== "string" ? arrayToTable(elem[1]) : elem[1]}
+            </p>
           )
       )}
       {/* This is where command history will go */}
@@ -29,16 +31,19 @@ export function REPLHistory(props: REPLHistoryProps) {
     </div>
   );
 }
+
 function arrayToTable(data: (string | number)[][]): JSX.Element {
   return (
-    <table>
-      {data.map((row, rowIndex) => (
-        <tr key={rowIndex}>
-          {row.map((cell, cellIndex) => (
-            <td key={cellIndex}>{cell}</td>
-          ))}
-        </tr>
-      ))}
-    </table>
+    <div style={{ textAlign: "center" }}>
+      <table style={{ margin: "auto" }}>
+        {data.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((cell, cellIndex) => (
+              <td key={cellIndex}>{cell}</td>
+            ))}
+          </tr>
+        ))}
+      </table>
+    </div>
   );
 }

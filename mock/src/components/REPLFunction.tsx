@@ -6,5 +6,13 @@
  * *NOT* contain the command-name prefix.
  */
 export interface REPLFunction {
-  (args: Array<string>): String | String[][];
+  (args: Array<string>): string | (string | number)[][];
+}
+
+function outerFunction(param: string): REPLFunction {
+  // isVergose = argument2
+  return (args: Array<string>) => {
+    // setIsVerbose
+    return "";
+  };
 }
