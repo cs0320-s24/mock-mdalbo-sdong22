@@ -136,3 +136,40 @@ test("test empty input", async ({ page }) => {
   });
   expect(firstChild).toBeUndefined();
 });
+
+/**
+ * Integration test for load, search, node, and view at once
+ */
+test("test everything", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").fill("load csv1");
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  const firstChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[0]?.textContent;
+  });
+  expect(firstChild).toEqual("succesfully loaded: csv1");
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  const secondChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[1]?.textContent;
+  });
+  expect(secondChild).toEqual("12345Thesongremainsthesame.");
+  await page.getByLabel("Command input").fill("search 2 target");
+  await page.getByRole("button", { name: "Submitted 2 times" }).click();
+  const thirdChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[2]?.textContent;
+  });
+  expect(thirdChild).toEqual("searchingforcsv12target");
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByRole("button", { name: "Submitted 3 times" }).click();
+
+  const fourthChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[5]?.textContent;
+  });
+  expect(fourthChild).toEqual("searchingforcsv12target");
+});
