@@ -47,7 +47,7 @@ export function REPLHistory(props: REPLHistoryProps) {
  * @param data a 2d array of strings or numbers
  * @returns jsx element of a table that is centered and has boxes around all the elements
  */
-function arrayToTable(data: (string | number)[][]): JSX.Element {
+export function arrayToTable(data: (string | number)[][]): JSX.Element {
   return (
     <div style={{ textAlign: "center" }}>
       <table style={{ margin: "auto", borderCollapse: "collapse" }}>

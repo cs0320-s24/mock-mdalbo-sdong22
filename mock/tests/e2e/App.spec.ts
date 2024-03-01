@@ -8,24 +8,15 @@ import { expect, test } from "@playwright/test";
   Look for this pattern in the tests below!
  */
 
-// If you needed to do something before every test case...
-test.beforeEach(() => {
-  // ... you'd put it here.
-  // TODO: Is there something we need to do before every test case to avoid repeating code?
-});
+test.beforeEach(() => {});
 
-/**
- * Don't worry about the "async" yet. We'll cover it in more detail
- * for the next sprint. For now, just think about "await" as something
- * you put before parts of your test that might take time to run,
- * like any interaction with the page.
- */
 test("on page load, i see a login button", async ({ page }) => {
-  // Notice: http, not https! Our front-end is not set up for HTTPs.
   await page.goto("http://localhost:8000/");
   await expect(page.getByLabel("Login")).toBeVisible();
 });
-
+/**
+ * Tests that the input box doesn't appear until after logging in.
+ */
 test("on page load, i dont see the input box until login", async ({ page }) => {
   // Notice: http, not https! Our front-end is not set up for HTTPs.
   await page.goto("http://localhost:8000/");
@@ -38,6 +29,9 @@ test("on page load, i dont see the input box until login", async ({ page }) => {
   await expect(page.getByLabel("Command input")).toBeVisible();
 });
 
+/**
+ * Tests that you can type in the box
+ */
 test("after I type into the input box, its text changes", async ({ page }) => {
   // Step 1: Navigate to a URL
   await page.goto("http://localhost:8000/");
@@ -53,7 +47,9 @@ test("after I type into the input box, its text changes", async ({ page }) => {
   const mock_input = `Awesome command`;
   await expect(page.getByLabel("Command input")).toHaveValue(mock_input);
 });
-
+/**
+ * The button appears once the page is loaded and logged in.
+ */
 test("on page load, i see a button", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
@@ -61,19 +57,25 @@ test("on page load, i see a button", async ({ page }) => {
     page.getByRole("button", { name: "Submitted 0 times" })
   ).toBeVisible();
 });
-
+/**
+ * The counter is working such that when it is clicked, the counter updates
+ */
 test("after I click the button, its label increments", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await expect(
     page.getByRole("button", { name: "Submitted 0 times" })
   ).toBeVisible();
+  await page.getByLabel("Command input").fill("Awesome command");
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
   await expect(
     page.getByRole("button", { name: "Submitted 1 times" })
   ).toBeVisible();
 });
-
+/**
+ * When a random command is typed in, we say that we don't understand that command and the
+ * counter increments.
+ */
 test("after I click the button, my command gets pushed", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
@@ -85,8 +87,52 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
     const history = document.querySelector(".repl-history");
     return history?.children[0]?.textContent;
   });
-  expect(firstChild).toEqual("Awesome command");
+  expect(firstChild).toEqual("no known function for given command");
+});
+/**
+ * Tests that if we haven't entered anything, clicking the submit button doesn't do anything.
+ */
+test("if I click button before typing anything, nothing happens", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await expect(
+    page.getByRole("button", { name: "Submitted 0 times" })
+  ).toBeVisible();
 });
 
-// testing with mode enables
-// testing without mode enabled
+/**
+ * Testing a command string with many words and spaces
+ */
+test("test many word input", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page
+    .getByLabel("Command input")
+    .fill("this is nonsense lol lol haha haha so much nonsense hehe");
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+
+  const firstChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[0]?.textContent;
+  });
+  expect(firstChild).toEqual("no known function for given command");
+});
+
+/**
+ * Testing empty input
+ */
+test("test empty input", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").fill("");
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+
+  const firstChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[0]?.textContent;
+  });
+  expect(firstChild).toBeUndefined();
+});

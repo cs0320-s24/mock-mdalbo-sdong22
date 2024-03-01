@@ -29,11 +29,13 @@ export function commands(
     ["Second", "CSV", "file"],
     ["bka"],
   ];
+  const data3: (string | number)[][] = [[1], ["One"], ["another1"]];
 
   /** Map of CSV name to actual data */
   const nameToCSV: Map<string, (string | number)[][]> = new Map([
     ["csv1", data1],
     ["csv2", data2],
+    ["csv3", data3],
   ]);
 
   /**
@@ -65,7 +67,7 @@ export function commands(
       setCurrCSV(args[1]);
       return "succesfully loaded: " + args[1];
     } else {
-      return "sorry" + args[1] + "does not exists in dataset";
+      return "sorry " + args[1] + " does not exists in dataset";
     }
   };
 
