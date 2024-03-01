@@ -92,9 +92,7 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
 /**
  * Tests that if we haven't entered anything, clicking the submit button doesn't do anything.
  */
-test("if I click button before typing anything, nothing happens", async ({
-  page,
-}) => {
+test("no text button, nothing happens", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByRole("button", { name: "Submitted 0 times" }).click();
@@ -171,5 +169,5 @@ test("test everything", async ({ page }) => {
     const history = document.querySelector(".repl-history");
     return history?.children[5]?.textContent;
   });
-  expect(fourthChild).toEqual("searchingforcsv12target");
+  expect(fourthChild).toEqual("result: searchingforcsv12target");
 });
