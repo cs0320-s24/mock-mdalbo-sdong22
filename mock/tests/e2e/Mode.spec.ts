@@ -55,5 +55,5 @@ test("mode then mode", async ({ page }) => {
     const history = document.querySelector(".repl-history");
     return history?.children[0]?.textContent;
   });
-  expect(firstChild).toEqual("result: no known function for given command");
+  expect(firstChild).toEqual("no known function for given command");
 });

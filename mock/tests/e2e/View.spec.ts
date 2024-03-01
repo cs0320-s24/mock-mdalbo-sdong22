@@ -142,11 +142,11 @@ test("v-changing load between views", async ({ page }) => {
 
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submitted 3 times" }).click();
-  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Command input").fill("mode");
   await page.getByRole("button", { name: "Submitted 4 times" }).click();
   const newlyLoaded = await page.evaluate(() => {
     const history = document.querySelector(".repl-history");
-    return history?.children[3]?.textContent;
+    return history?.children[7]?.textContent;
   });
-  expect(newlyLoaded).toEqual("10987SecondCSVfilebka");
+  expect(newlyLoaded).toEqual("result: 10987SecondCSVfilebka");
 });
