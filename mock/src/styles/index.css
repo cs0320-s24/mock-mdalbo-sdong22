@@ -29,9 +29,9 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 10%;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.4em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -50,12 +50,12 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: grey;
   }
   a:hover {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #24765c;
   }
 }

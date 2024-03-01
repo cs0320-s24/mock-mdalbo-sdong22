@@ -5,16 +5,18 @@
 */
 
 .repl {
+  background-color: #93b1a7;
   position: relative;
   min-height: 95vh;
 }
 
 .repl-history {
+  background-color: #c5edac;
   height: 55vh;
   margin: auto;
   display: block;
   overflow: scroll;
-  color: lightpink;
+  color: black;
 }
 
 .repl-input {
@@ -25,7 +27,7 @@
   width: 90%;
   margin: auto;
   display: block;
-  color: orange;
+  color: #073b2a;
 }
 button {
   margin: auto;

@@ -22,10 +22,8 @@ test("main.zero() should return 0", () => {
  */
 test("table maker", () => {
   const createdTable = arrayToTable([["hi", "my", "name", "nemo"]]);
-  expect(createdTable.type).toEqual("div");
+  expect(createdTable?.type).toEqual("div");
 });
 
 // For more information on how to make unit tests, visit:
 // https://jestjs.io/docs/using-matchers
-
-// unit testing for functions like table maker

@@ -1,14 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Retro&display=swap");
+
 .App {
   text-align: center;
 }
 
 .App-header {
-  background-color: #5278c3;
+  background-color: #7a918d;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(1px + 2vmin);
-  color: white;
+  color: #41665c;
+  font-family: "Retro", cursive;
 }
+
+/* #7A918D battleship grey
+#93B1A7 cambridge blue
+#99C2A2 cmbridge blue
+#C5EDAC tea green
+#DBFEB8 tea green */
