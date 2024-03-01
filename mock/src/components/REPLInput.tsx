@@ -73,7 +73,9 @@ export function REPLInput(props: REPLInputProps) {
           ariaLabel={"Command input"}
         />
       </fieldset>
-      <button onClick={handleSubmit}>Submitted {count} times</button>
+      <button aria-label="submit button" onClick={handleSubmit}>
+        Submitted {count} times
+      </button>
     </div>
   );
 }

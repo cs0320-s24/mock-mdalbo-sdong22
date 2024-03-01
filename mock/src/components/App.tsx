@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import '../styles/App.css';
-import { LoginButton } from './LoginButton';
-import REPL from './REPL';
+import { useState } from "react";
+import "../styles/App.css";
+import { LoginButton } from "./LoginButton";
+import REPL from "./REPL";
 
 /**
  * This is the highest level component!
@@ -13,10 +13,14 @@ function App() {
     <div className="App">
       <p className="App-header">
         <h1>Mock</h1>
-        <LoginButton isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <LoginButton
+          aria-label="login button"
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+        />
       </p>
 
-      { isLoggedIn && <REPL /> }
+      {isLoggedIn && <REPL />}
     </div>
   );
 }
